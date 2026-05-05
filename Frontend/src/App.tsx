@@ -20,10 +20,10 @@ const App: React.FC = () => {
         </header>
 
         <main className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[calc(100vh-140px)] min-h-[600px]">
-          <div className="h-full">
+          <div className="h-full min-h-0">
             <InteractionForm />
           </div>
-          <div className="h-full">
+          <div className="h-full min-h-0">
             <AiChat />
           </div>
         </main>

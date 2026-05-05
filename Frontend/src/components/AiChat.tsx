@@ -50,8 +50,8 @@ const AiChat: React.FC = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-xl border border-gray-100 h-full flex flex-col">
-      <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
+    <div className="bg-white p-6 rounded-2xl shadow-xl border border-gray-100 h-full flex flex-col overflow-hidden">
+      <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100 shrink-0">
         <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
           <Bot size={24} />
         </div>
@@ -84,7 +84,7 @@ const AiChat: React.FC = () => {
         <div ref={endOfMessagesRef} />
       </div>
 
-      <div className="relative mt-auto">
+      <div className="relative mt-auto shrink-0">
         <input 
           type="text" 
           value={input}

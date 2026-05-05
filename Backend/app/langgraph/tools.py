@@ -89,6 +89,7 @@ def fetch_interaction_tool(state):
 
 # Tool 4: Suggest Follow-up
 def suggest_followup_tool(state):
+    db = SessionLocal()
     llm = get_llm()
 
     user_input = state.get("input", "")
@@ -99,9 +100,20 @@ def suggest_followup_tool(state):
     """
 
     response = llm.invoke(prompt)
+    follow_up_text = response.content.strip()
+
+    interaction_id = state.get("interaction_id")
+    if not interaction_id:
+        latest = get_latest_interaction(db)
+        if latest:
+            interaction_id = latest.id
+
+    if interaction_id:
+        update_interaction(db, interaction_id, {"follow_up": follow_up_text})
 
     return {
-        "output": response.content,
+        "output": follow_up_text,
+        "data": {"follow_up": follow_up_text},
         "input": user_input,
         "intent": state.get("intent")
     }

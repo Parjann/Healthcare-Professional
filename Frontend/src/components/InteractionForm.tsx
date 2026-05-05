@@ -13,9 +13,9 @@ const InteractionForm: React.FC = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-xl border border-gray-100 h-full flex flex-col">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Interaction Details</h2>
-      <div className="space-y-4 flex-1 overflow-y-auto pr-2">
+    <div className="bg-white p-6 rounded-2xl shadow-xl border border-gray-100 h-full flex flex-col overflow-hidden">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6 shrink-0">Interaction Details</h2>
+      <div className="space-y-4 flex-1 flex flex-col overflow-y-auto pr-2">
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">HCP Name</label>
@@ -57,9 +57,9 @@ const InteractionForm: React.FC = () => {
           <textarea name="notes" value={form.notes} onChange={handleChange} rows={3} className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none" placeholder="Interaction summary..."></textarea>
         </div>
 
-        <div>
+        <div className="flex-1 flex flex-col min-h-[120px]">
           <label className="block text-sm font-medium text-gray-700 mb-1">Follow Up Plan</label>
-          <textarea name="follow_up" value={form.follow_up} onChange={handleChange} rows={2} className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none" placeholder="Next steps..."></textarea>
+          <textarea name="follow_up" value={form.follow_up} onChange={handleChange} className="w-full flex-1 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none resize-none" placeholder="Next steps..."></textarea>
         </div>
       </div>
     </div>

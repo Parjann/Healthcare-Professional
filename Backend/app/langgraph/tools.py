@@ -17,7 +17,7 @@ def log_interaction_tool(state):
     return {
         "output": f"Interaction logged for {interaction.hcp_name}",
         "data": extracted,
-        "input": user_input,   # 🔥 preserve state
+        "input": user_input,
         "intent": state.get("intent")
     }
 
@@ -50,12 +50,38 @@ def fetch_interaction_tool(state):
     db = SessionLocal()
 
     interaction_id = state.get("interaction_id")
+    
+    if not interaction_id:
+        interaction = get_latest_interaction(db)
+    else:
+        interaction = get_interaction(db, interaction_id)
 
-    interaction = get_interaction(db, interaction_id)
+    data = None
+    if interaction:
+        data = {
+            "hcp_name": interaction.hcp_name or "",
+            "date": str(interaction.date) if interaction.date else "",
+            "time": str(interaction.time)[:5] if interaction.time else "",
+            "topics": interaction.topics or "",
+            "sentiment": interaction.sentiment or "Neutral",
+            "materials": interaction.materials or "",
+            "notes": interaction.notes or "",
+            "follow_up": interaction.follow_up or ""
+        }
+
+    output_message = "Fetched interaction details."
+    if data:
+        output_message = f"Fetched interaction details for {data.get('hcp_name') or 'HCP'}:\n"
+        for key, value in data.items():
+            if value:
+                formatted_key = key.replace('_', ' ').title()
+                output_message += f"- **{formatted_key}**: {value}\n"
+    else:
+        output_message = "No interactions found."
 
     return {
-        "output": "Fetched interaction",
-        "data": str(interaction),
+        "output": output_message,
+        "data": data,
         "input": state.get("input"),
         "intent": state.get("intent")
     }

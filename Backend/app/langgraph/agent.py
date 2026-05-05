@@ -1,31 +1,59 @@
 from langgraph.graph import StateGraph
-from app.core.llm import llm
-import json
+from app.langgraph.router import detect_intent
+from app.langgraph.tools import (
+    log_interaction_tool,
+    edit_interaction_tool,
+    fetch_interaction_tool,
+    suggest_followup_tool,
+    summarize_tool
+)
 
-def extract_data(state):
-    user_input = state["input"]
+def route(state):
+    intent = state["intent"]
 
-    prompt = f"""
-    Extract CRM interaction data in JSON format:
-    Fields: hcp_name, topics, sentiment, materials, notes
+    if "log" in intent:
+        return "log"
+    elif "edit" in intent:
+        return "edit"
+    elif "fetch" in intent:
+        return "fetch"
+    elif "follow" in intent:
+        return "followup"
+    elif "summar" in intent:
+        return "summarize"
+    else:
+        return "log"  # fallback
 
-    Text: {user_input}
-    """
-
-    response = llm.invoke(prompt)
-
-    try:
-        data = json.loads(response.content)
-    except:
-        data = {"notes": user_input}
-
-    return {"structured_data": data}
 
 builder = StateGraph(dict)
 
-builder.add_node("extract", extract_data)
+# Nodes
+builder.add_node("intent", detect_intent)
+builder.add_node("log", log_interaction_tool)
+builder.add_node("edit", edit_interaction_tool)
+builder.add_node("fetch", fetch_interaction_tool)
+builder.add_node("followup", suggest_followup_tool)
+builder.add_node("summarize", summarize_tool)
 
-builder.set_entry_point("extract")
-builder.set_finish_point("extract")
+# Flow
+builder.set_entry_point("intent")
+
+builder.add_conditional_edges(
+    "intent",
+    route,
+    {
+        "log": "log",
+        "edit": "edit",
+        "fetch": "fetch",
+        "followup": "followup",
+        "summarize": "summarize",
+    }
+)
+
+builder.set_finish_point("log")
+builder.set_finish_point("edit")
+builder.set_finish_point("fetch")
+builder.set_finish_point("followup")
+builder.set_finish_point("summarize")
 
 graph = builder.compile()

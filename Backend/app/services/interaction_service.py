@@ -2,7 +2,8 @@ from sqlalchemy.orm import Session
 from app.models.interaction import Interaction
 
 def create_interaction(db: Session, data):
-    interaction = Interaction(**data.dict())
+    data_dict = data if isinstance(data, dict) else data.dict()
+    interaction = Interaction(**data_dict)
     db.add(interaction)
     db.commit()
     db.refresh(interaction)

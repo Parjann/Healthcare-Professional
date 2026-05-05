@@ -121,19 +121,58 @@ def suggest_followup_tool(state):
 
 # Tool 5: Summarize Interaction
 def summarize_tool(state):
+    db = SessionLocal()
     llm = get_llm()
 
     user_input = state.get("input", "")
 
+    interaction_id = state.get("interaction_id")
+    if not interaction_id:
+        latest = get_latest_interaction(db)
+        if latest:
+            interaction_id = latest.id
+            interaction = latest
+        else:
+            interaction = None
+    else:
+        interaction = get_interaction(db, interaction_id)
+
+    if not interaction:
+        return {
+            "output": "No interaction found to summarize.",
+            "data": None,
+            "input": user_input,
+            "intent": state.get("intent")
+        }
+
+    interaction_details = f"""
+    HCP Name: {interaction.hcp_name}
+    Date: {interaction.date}
+    Topics: {interaction.topics}
+    Sentiment: {interaction.sentiment}
+    Materials: {interaction.materials}
+    Current Notes: {interaction.notes}
+    """
+
     prompt = f"""
-    Summarize this interaction:
-    {user_input}
+    You are a medical CRM assistant.
+    Summarize the following interaction clearly and concisely into a short professional summary paragraph.
+    
+    Interaction Details:
+    {interaction_details}
+
+    User Request: {user_input}
     """
 
     response = llm.invoke(prompt)
+    summary_text = response.content.strip()
+
+    # Automatically save the new summary to the interaction notes
+    update_interaction(db, interaction_id, {"notes": summary_text})
 
     return {
-        "output": response.content,
+        "output": summary_text,
+        "data": {"notes": summary_text},
         "input": user_input,
         "intent": state.get("intent")
     }

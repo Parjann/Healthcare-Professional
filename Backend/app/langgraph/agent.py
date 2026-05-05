@@ -8,27 +8,39 @@ from app.langgraph.tools import (
     summarize_tool
 )
 
-def route(state):
-    intent = state["intent"]
 
-    if "log" in intent:
+def add_memory(state):
+    history = state.get("history", [])
+    history.append(state["input"])
+
+    return {
+        **state,
+        "history": history
+    }
+
+
+def route(state):
+    intent = state["intent"].lower()
+
+    if intent == "log":
         return "log"
-    elif "edit" in intent:
+    elif intent == "edit":
         return "edit"
-    elif "fetch" in intent:
+    elif intent == "fetch":
         return "fetch"
-    elif "follow" in intent:
+    elif intent == "followup":
         return "followup"
-    elif "summar" in intent:
+    elif intent == "summarize":
         return "summarize"
     else:
-        return "log"  # fallback
+        return "log"
 
 
 builder = StateGraph(dict)
 
 # Nodes
 builder.add_node("intent", detect_intent)
+builder.add_node("memory", add_memory)
 builder.add_node("log", log_interaction_tool)
 builder.add_node("edit", edit_interaction_tool)
 builder.add_node("fetch", fetch_interaction_tool)
@@ -38,8 +50,10 @@ builder.add_node("summarize", summarize_tool)
 # Flow
 builder.set_entry_point("intent")
 
+builder.add_edge("intent", "memory")
+
 builder.add_conditional_edges(
-    "intent",
+    "memory",
     route,
     {
         "log": "log",

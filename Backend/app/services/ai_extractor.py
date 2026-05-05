@@ -116,3 +116,43 @@ Now extract from:
             "notes": user_input,
             "follow_up": ""
         }
+
+def extract_edit_data(user_input: str):
+    llm = get_llm()
+    prompt = f"""
+You are a STRICT CRM data extraction system.
+Extract ONLY the fields the user wants to update from the input.
+Return ONLY valid JSON. No explanation.
+
+SCHEMA (only include fields that are mentioned):
+{{
+  "hcp_name": string,
+  "date": "YYYY-MM-DD",
+  "time": "HH:MM",
+  "topics": string,
+  "sentiment": "Positive" | "Neutral" | "Negative",
+  "materials": string,
+  "notes": string,
+  "follow_up": string
+}}
+
+EXAMPLE:
+Input: Change the sentiment to Negative and the doctor's name to Dr Smith
+Output:
+{{
+  "sentiment": "Negative",
+  "hcp_name": "Dr Smith"
+}}
+
+Now extract from:
+{user_input}
+"""
+    response = llm.invoke(prompt)
+    try:
+        data = safe_json_load(response.content)
+        if "sentiment" in data:
+            data["sentiment"] = data["sentiment"].capitalize()
+        return data
+    except Exception as e:
+        print("Edit Extraction error:", e)
+        return {{}}

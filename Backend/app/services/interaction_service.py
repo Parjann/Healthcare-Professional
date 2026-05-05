@@ -14,8 +14,13 @@ def get_interaction(db: Session, interaction_id: int):
 
 def update_interaction(db: Session, interaction_id: int, updates: dict):
     interaction = get_interaction(db, interaction_id)
+    if not interaction:
+        return None
     for key, value in updates.items():
         setattr(interaction, key, value)
     db.commit()
     db.refresh(interaction)
     return interaction
+
+def get_latest_interaction(db: Session):
+    return db.query(Interaction).order_by(Interaction.id.desc()).first()

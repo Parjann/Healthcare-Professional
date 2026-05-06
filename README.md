@@ -1,11 +1,11 @@
-# 🧠 AI-First CRM – HCP Interaction Module
+# 🧠 HCP Nexus – AI-First CRM
 
-An AI-powered Customer Relationship Management (CRM) system designed for pharmaceutical field representatives to log and manage interactions with Healthcare Professionals (HCPs).
+An intelligent, AI-powered Customer Relationship Management (CRM) platform designed for pharmaceutical field representatives to seamlessly log and manage interactions with Healthcare Professionals (HCPs).
 
-This project implements a **Log Interaction Screen** with both:
+This project features a **Premium Glassmorphism UI** with a **Log Interaction Screen** containing both:
 
-* 📝 Structured Form Input
-* 💬 Conversational AI Chat Interface (LangGraph + LLM)
+* 📝 Real-time Structured Form Input
+* 💬 Conversational AI Copilot (Powered by LangGraph + LLM)
 
 ---
 
@@ -27,7 +27,8 @@ This system enables field reps to efficiently log HCP interactions using AI assi
 
 * React.js
 * Redux (State Management)
-* Tailwind CSS
+* Tailwind CSS (Premium Dark Mode & Glassmorphism)
+* Lucide React (Icons)
 * Google Inter Font
 
 ### Backend
@@ -48,14 +49,13 @@ This system enables field reps to efficiently log HCP interactions using AI assi
 
 ## 🧠 Key Features
 
-* ✅ Log interactions via form
-* ✅ Log interactions via AI chat
-* ✅ Automatic data extraction (LLM)
-* ✅ Sentiment detection (Positive / Neutral / Negative)
-* ✅ Edit existing interactions
-* ✅ AI-generated follow-up suggestions
-* ✅ Interaction summarization
-* ✅ Clean and responsive UI
+* ✅ **Premium UI/UX:** Stunning dark-mode glassmorphism interface with micro-animations.
+* ✅ **Dual Input:** Log interactions via manual form or AI conversational chat.
+* ✅ **Intelligent Extraction:** Automatic structured data extraction via LLM.
+* ✅ **Context-Aware Editing:** Say "Change the sentiment to negative" and the AI automatically updates the latest interaction.
+* ✅ **Smart Follow-ups:** AI generates actionable next steps and auto-populates the database.
+* ✅ **Interaction Summarization:** AI fetches the latest interaction data and provides a professional summary.
+* ✅ **Real-Time Sync:** Chat outputs immediately reflect on the visual CRM form.
 
 ---
 
@@ -77,49 +77,41 @@ The LangGraph agent acts as an intelligent assistant for sales representatives.
 
 ### 1. Log Interaction Tool
 
-* Converts chat input into structured data
-* Extracts:
-
-  * HCP Name
-  * Topics
-  * Sentiment
-  * Materials
-  * Notes
-* Saves interaction to database
+* Converts natural chat input into structured data.
+* Extracts: HCP Name, Topics, Sentiment, Materials, Notes.
+* Saves the interaction to the PostgreSQL database and immediately updates the UI.
 
 ---
 
 ### 2. Edit Interaction Tool
 
-* Updates existing interaction records
+* Contextually updates existing interaction records.
+* Retrieves the latest interaction from the database if an ID is omitted.
 * Example:
-
-  > "Change sentiment to neutral"
+  > "Change sentiment to neutral and update the topic to Oncology"
 
 ---
 
 ### 3. Fetch Interaction Tool
 
-* Retrieves past interactions
+* Retrieves past interactions to display in the chat and form.
+* Automatically falls back to the most recent interaction for quick context.
 * Example:
-
-  > "Show last meeting with Dr Sharma"
+  > "Show me the interaction details"
 
 ---
 
 ### 4. Suggest Follow-up Tool
 
-* Recommends next steps using AI
-* Example:
-
-  * Schedule follow-up meeting
-  * Share product brochure
+* Recommends actionable next steps using the LLM.
+* Automatically saves the generated follow-up plan to the database and populates the form.
 
 ---
 
 ### 5. Summarize Interaction Tool
 
-* Converts long notes into concise summaries
+* Pulls the latest interaction details directly from the database and generates a concise, professional summary.
+* Automatically populates the interaction 'Notes' field with the summary.
 
 ---
 
